@@ -2,8 +2,9 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-sceIOt0gpxLDvytZNnuUxyoiETSsYgsc3dvZy9iKEdg=' 'sha256-HiWyKcpDjfIEGTDmqrIPJRk1PY3toNdcjKi5qFt2TL8='; style-src 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src https://fonts.gstatic.com; connect-src 'self'; manifest-src 'self'; media-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-sceIOt0gpxLDvytZNnuUxyoiETSsYgsc3dvZy9iKEdg=' 'sha256-tTOH7rH+qHm9ddQC3BZW7v4uhVynAFJzTh86//nu16U=' 'sha256-sp1XNv5uy4jP5BaVZkNMQ+kzvLX2Db/rK/L33su3G8M=' 'sha256-D3caKY73TRkcxqV2fgw47Yta+Zq5LjPKTcOZ6GLD+VQ='; style-src 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src https://fonts.gstatic.com; connect-src 'self'; manifest-src 'self'; media-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex, nofollow">
 <script>if (window.top !== window.self) document.documentElement.style.display = 'none';</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>もふもふ連連看｜毛茸茸動物連連看</title>
@@ -17,7 +18,16 @@
   --spring: cubic-bezier(.34,1.56,.64,1);
   --out: cubic-bezier(.22,1,.36,1);
   --font: "Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  /* ok-i18n language button: aliases onto the game's own tokens */
+  --color-ink: var(--sumi); --color-ink-2: var(--sumi-soft); --color-hairline: var(--line); --color-card: var(--paper);
+  --color-band: var(--tatami); --color-focus: var(--asagi); --shadow-lift: 0 4px 0 #E3D8C4, 0 16px 32px rgba(86,66,42,.14);
+  --radius-md: 18px; --radius-pill: 999px; --text-xs: 12px; --text-sm: 14px; --dur: .2s; --ease: var(--out); --font-display: var(--font);
 }
+/* Per-language fonts: keep the rounded Zen Maru Gothic first (Latin, digits, kana), then a system font for each script. */
+html:root:lang(ja){ --font: "Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif; }
+html:root:lang(ko){ --font: "Zen Maru Gothic","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif; }
+html:root:lang(hi){ --font: "Zen Maru Gothic","Kohinoor Devanagari","Noto Sans Devanagari","Nirmala UI",sans-serif; }
+:root:lang(hi) :is(.brand,.btn,.card h1,.intro-level,.timer-text,.seg-btn){letter-spacing:0}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{
@@ -248,9 +258,39 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
   .card h1{font-size:28px}
   .intro-kanji{font-size:48px}
 }
+/* language button sits above the overlays so it works on the start / pause cards too */
+.hud .lang{z-index:41}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important; transition-duration:.01ms !important}
 }
+/* ok-i18n:start */
+/* ok-i18n：語言選單與各語言字體。顏色、圓角、陰影全部走頁面自己的 token。 */
+:root:lang(zh-Hans) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
+:root:lang(ja) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif; }
+:root:lang(ko) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+:root:lang(hi) { --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Kohinoor Devanagari", "Noto Sans Devanagari", "Nirmala UI", sans-serif; --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Kohinoor Devanagari", "Noto Sans Devanagari", "Nirmala UI", sans-serif; }
+:root:lang(hi) body, :root:lang(ko) body, :root:lang(ja) body { letter-spacing: 0; }
+:root:lang(en), :root:lang(es), :root:lang(pt), :root:lang(ms), :root:lang(hi) { word-break: normal; overflow-wrap: break-word; }
+
+.lang { position: relative; flex: none; }
+.lang-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px 0 9px; font: inherit; font-size: var(--text-xs, 12px); color: var(--color-ink-2); background: transparent; border: 1px solid var(--color-hairline); border-radius: var(--radius-pill, 9999px); cursor: pointer; white-space: nowrap; transition: color var(--dur, 240ms) var(--ease), border-color var(--dur, 240ms) var(--ease), background-color var(--dur, 240ms) var(--ease); }
+.lang-btn svg { width: 14px; height: 14px; flex: none; }
+.lang-btn:hover, .lang-btn[aria-expanded="true"] { color: var(--color-ink); border-color: var(--color-ink); }
+.lang-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; transition: none; }
+.lang-btn:active { background: var(--color-band); }
+.lang-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; min-width: 176px; max-height: min(70dvh, 420px); overflow-y: auto; margin: 0; padding: 6px; list-style: none; background: var(--color-card); border-radius: var(--radius-md, 14px); box-shadow: var(--shadow-lift); }
+.lang-menu[hidden] { display: none; }
+.lang-menu button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 9px 12px; font: inherit; font-size: var(--text-sm, 14px); line-height: 1.35; letter-spacing: 0; color: var(--color-ink); background: transparent; border: 0; border-radius: 9px; cursor: pointer; text-align: left; }
+.lang-menu button[lang="zh-Hant"] { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif; }
+.lang-menu button[lang="zh-Hans"] { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif; }
+.lang-menu button[lang="ja"] { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+.lang-menu button[lang="ko"] { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+.lang-menu button[lang="hi"] { font-family: -apple-system, BlinkMacSystemFont, "Kohinoor Devanagari", "Noto Sans Devanagari", sans-serif; }
+.lang-menu button:hover { background: var(--color-band); }
+.lang-menu button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.lang-menu button[aria-checked="true"]::after { content: ""; width: 9px; height: 5px; margin-top: -3px; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) { .lang-btn { transition: none; } }
+/* ok-i18n:end */
 </style>
 </head>
 <body>
@@ -262,30 +302,34 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
         <span>もふもふ連連看</span>
       </div>
       <div class="level-pill"><span id="levelNo">第 1 關</span><span class="kanji" id="levelName">桜</span></div>
-      <button class="icon-btn" id="btnPause" aria-label="暫停"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
+      <div class="lang" id="lang">
+  <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="Language"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="6.3"/><path d="M1.7 8h12.6M8 1.7c1.8 1.7 2.7 3.8 2.7 6.3S9.8 12.6 8 14.3M8 1.7C6.2 3.4 5.3 5.5 5.3 8s.9 4.6 2.7 6.3"/></svg><span id="langCur">繁中</span></button>
+  <ul class="lang-menu" id="langMenu" role="menu" aria-label="Language" hidden></ul>
+</div>
+      <button class="icon-btn" id="btnPause" aria-label="暫停" data-ia="aria-label:pauseAria"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
     </div>
-    <div class="timer" id="timer" role="progressbar" aria-label="剩餘時間"><div class="timer-fill" id="timerFill"></div><div class="timer-ice"></div><span class="timer-text" id="timerText">0</span></div>
+    <div class="timer" id="timer" role="progressbar" aria-label="剩餘時間" data-ia="aria-label:timeLeftAria"><div class="timer-fill" id="timerFill"></div><div class="timer-ice"></div><span class="timer-text" id="timerText">0</span></div>
     <div class="hud-row stats">
-      <div class="stat">分數 <b id="score">0</b></div>
-      <div class="combo" id="combo">連擊 ×<b id="comboN">1</b></div>
-      <div class="stat">剩餘 <b id="remain">0</b></div>
+      <div class="stat"><span data-i="score">分數</span> <b id="score">0</b></div>
+      <div class="combo" id="combo"><span data-i="comboLabel">連擊 ×</span><b id="comboN">1</b></div>
+      <div class="stat"><span data-i="remain">剩餘</span> <b id="remain">0</b></div>
     </div>
   </header>
 
   <main class="stage" id="stage">
-    <div class="board" id="board" aria-label="遊戲盤面" style="display:none">
+    <div class="board" id="board" aria-label="遊戲盤面" data-ia="aria-label:boardAria" style="display:none">
       <svg class="paths" id="paths" xmlns="http://www.w3.org/2000/svg"></svg>
       <div class="fx" id="fx"></div>
     </div>
   </main>
 
-  <nav class="dock" aria-label="道具">
-    <button class="item" data-item="hint" title="提示:亮出一組可連的動物"><svg viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span>提示</span><span class="count">0</span></button>
-    <button class="item" data-item="shuffle" title="洗牌:重新排列所有動物"><svg viewBox="0 0 24 24"><path d="M3 7h4l10 10h4M3 17h4l3-3M14 7h7M18 4l3 3-3 3M18 14l3 3-3 3"/></svg><span>洗牌</span><span class="count">0</span></button>
-    <button class="item" data-item="freeze" title="冰結:時間暫停 6 秒"><svg viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M12 3l-2.2 2.2M12 3l2.2 2.2M12 21l-2.2-2.2M12 21l2.2-2.2M4.2 7.5l3 .5M4.2 7.5l.5-3M19.8 16.5l-3-.5M19.8 16.5l-.5 3M4.2 16.5l3-.5M4.2 16.5l.5 3M19.8 7.5l-3 .5M19.8 7.5l-.5-3"/></svg><span>冰結</span><span class="count">0</span></button>
-    <button class="item" data-item="magic" title="魔法:自動配對一組"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 6.4L21 12l-6.6 2.6L12 21l-2.4-6.4L3 12l6.6-2.6z"/><path d="M19 3.5v3M17.5 5h3" fill="none"/></svg><span>魔法</span><span class="count">0</span></button>
+  <nav class="dock" aria-label="道具" data-ia="aria-label:itemsAria">
+    <button class="item" data-item="hint" title="提示:亮出一組可連的動物" data-ia="title:hintTitle"><svg viewBox="0 0 24 24"><path d="M9.5 18h5M10.5 21h3M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span data-i="hint">提示</span><span class="count">0</span></button>
+    <button class="item" data-item="shuffle" title="洗牌:重新排列所有動物" data-ia="title:shuffleTitle"><svg viewBox="0 0 24 24"><path d="M3 7h4l10 10h4M3 17h4l3-3M14 7h7M18 4l3 3-3 3M18 14l3 3-3 3"/></svg><span data-i="shuffle">洗牌</span><span class="count">0</span></button>
+    <button class="item" data-item="freeze" title="冰結:時間暫停 6 秒" data-ia="title:freezeTitle"><svg viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M12 3l-2.2 2.2M12 3l2.2 2.2M12 21l-2.2-2.2M12 21l2.2-2.2M4.2 7.5l3 .5M4.2 7.5l.5-3M19.8 16.5l-3-.5M19.8 16.5l-.5 3M4.2 16.5l3-.5M4.2 16.5l.5 3M19.8 7.5l-3 .5M19.8 7.5l-.5-3"/></svg><span data-i="freeze">冰結</span><span class="count">0</span></button>
+    <button class="item" data-item="magic" title="魔法:自動配對一組" data-ia="title:magicTitle"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 6.4L21 12l-6.6 2.6L12 21l-2.4-6.4L3 12l6.6-2.6z"/><path d="M19 3.5v3M17.5 5h3" fill="none"/></svg><span data-i="magic">魔法</span><span class="count">0</span></button>
     <span class="divider"></span>
-    <button class="icon-btn" id="btnSound" aria-label="音效開關"><svg viewBox="0 0 24 24"><path class="on" d="M4 10v4h3l4 4V6L7 10H4zM15 9a4 4 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11"/><path class="off" d="M4 10v4h3l4 4V6L7 10H4zM16 9l5 5M21 9l-5 5"/></svg></button>
+    <button class="icon-btn" id="btnSound" aria-label="音效開關" data-ia="aria-label:soundAria"><svg viewBox="0 0 24 24"><path class="on" d="M4 10v4h3l4 4V6L7 10H4zM15 9a4 4 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11"/><path class="off" d="M4 10v4h3l4 4V6L7 10H4zM16 9l5 5M21 9l-5 5"/></svg></button>
   </nav>
 
   <div class="toasts" id="toasts" aria-live="polite"></div>
@@ -294,30 +338,30 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
   <div class="overlay" id="ovStart">
     <div class="card">
       <h1>もふもふ連連看</h1>
-      <div class="sub">毛茸茸動物連連看</div>
+      <div class="sub" data-i="subtitle">毛茸茸動物連連看</div>
       <div class="preview" id="preview"></div>
-      <p class="lead">找出兩隻一樣的動物,用最多轉兩個彎的線連起來。<br>動作越快,連擊越高,道具也越多。</p>
+      <p class="lead" data-i="lead!">找出兩隻一樣的動物,用最多轉兩個彎的線連起來。<br>動作越快,連擊越高,道具也越多。</p>
       <div class="seg-wrap">
-        <div class="seg-label">節奏</div>
+        <div class="seg-label" data-i="paceLabel">節奏</div>
         <div class="seg" id="seg" role="radiogroup">
           <div class="seg-ind"></div>
-          <button class="seg-btn" data-diff="1.5" role="radio" aria-checked="false">悠閒<small>時間 ×1.5</small></button>
-          <button class="seg-btn on" data-diff="1" role="radio" aria-checked="true">標準<small>時間 ×1</small></button>
-          <button class="seg-btn" data-diff="0.7" role="radio" aria-checked="false">高手<small>時間 ×0.7</small></button>
+          <button class="seg-btn" data-diff="1.5" role="radio" aria-checked="false" data-i="diffEasy!">悠閒<small>時間 ×1.5</small></button>
+          <button class="seg-btn on" data-diff="1" role="radio" aria-checked="true" data-i="diffStd!">標準<small>時間 ×1</small></button>
+          <button class="seg-btn" data-diff="0.7" role="radio" aria-checked="false" data-i="diffPro!">高手<small>時間 ×0.7</small></button>
         </div>
       </div>
       <div class="seg-wrap">
-        <div class="seg-label">盤面</div>
+        <div class="seg-label" data-i="boardLabel">盤面</div>
         <div class="seg two" id="segSize" role="radiogroup">
           <div class="seg-ind"></div>
-          <button class="seg-btn on" data-size="small" role="radio" aria-checked="true">輕巧<small>6×4 起,適合手機</small></button>
-          <button class="seg-btn" data-size="big" role="radio" aria-checked="false">寬闊<small>10×6 起,適合電腦</small></button>
+          <button class="seg-btn on" data-size="small" role="radio" aria-checked="true" data-i="sizeSmall!">輕巧<small>6×4 起,適合手機</small></button>
+          <button class="seg-btn" data-size="big" role="radio" aria-checked="false" data-i="sizeBig!">寬闊<small>10×6 起,適合電腦</small></button>
         </div>
       </div>
-      <div class="best" id="bestLine" hidden>最高分 <b id="bestVal">0</b></div>
+      <div class="best" id="bestLine" hidden><span data-i="best">最高分</span> <b id="bestVal">0</b></div>
       <div class="actions">
-        <button class="btn" id="btnStart">開始遊戲</button>
-        <button class="btn ghost" id="btnHow">怎麼玩</button>
+        <button class="btn" id="btnStart" data-i="start">開始遊戲</button>
+        <button class="btn ghost" id="btnHow" data-i="how">怎麼玩</button>
       </div>
     </div>
   </div>
@@ -325,16 +369,16 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
   <!-- how to play -->
   <div class="overlay" id="ovHow">
     <div class="card">
-      <h2>怎麼玩</h2>
+      <h2 data-i="how">怎麼玩</h2>
       <div class="rules">
-        <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h6v6h10v6"/></svg></span><span>點兩隻相同的動物。連線最多轉兩個彎,而且路上不能有其他方塊。</span></div>
-        <div><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span><span>時間條走完就結束。每配對一次會補一點時間,有櫻花標記的方塊再加 4 秒。</span></div>
-        <div><span class="ic">×5</span><span>連續快速配對會累積連擊,分數跟著加倍。連擊每達 5 次,送一個隨機道具。</span></div>
-        <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 6.4L21 12l-6.6 2.6L12 21l-2.4-6.4L3 12l6.6-2.6z"/></svg></span><span>道具:提示(亮出一組)、洗牌(重排)、冰結(時間停 6 秒)、魔法(自動配對一組)。</span></div>
-        <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v16M5 11l7 9 7-9"/></svg></span><span>從第 3 關起,配對後方塊會移動(落下、靠邊、聚攏),連線路徑也會跟著變。</span></div>
-        <div><span class="ic">∞</span><span>卡住時會自動換掉兩隻動物讓你繼續,不消耗道具。第 4 關起,長得像的動物會被刻意排在一起,看仔細。</span></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h6v6h10v6"/></svg></span><span data-i="r1">點兩隻相同的動物。連線最多轉兩個彎,而且路上不能有其他方塊。</span></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span><span data-i="r2">時間條走完就結束。每配對一次會補一點時間,有櫻花標記的方塊再加 4 秒。</span></div>
+        <div><span class="ic">×5</span><span data-i="r3">連續快速配對會累積連擊,分數跟著加倍。連擊每達 5 次,送一個隨機道具。</span></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 6.4L21 12l-6.6 2.6L12 21l-2.4-6.4L3 12l6.6-2.6z"/></svg></span><span data-i="r4">道具:提示(亮出一組)、洗牌(重排)、冰結(時間停 6 秒)、魔法(自動配對一組)。</span></div>
+        <div><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v16M5 11l7 9 7-9"/></svg></span><span data-i="r5">從第 3 關起,配對後方塊會移動(落下、靠邊、聚攏),連線路徑也會跟著變。</span></div>
+        <div><span class="ic">∞</span><span data-i="r6">卡住時會自動換掉兩隻動物讓你繼續,不消耗道具。第 4 關起,長得像的動物會被刻意排在一起,看仔細。</span></div>
       </div>
-      <div class="actions"><button class="btn" id="btnHowClose">知道了</button></div>
+      <div class="actions"><button class="btn" id="btnHowClose" data-i="gotIt">知道了</button></div>
     </div>
   </div>
 
@@ -350,8 +394,8 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
       </div>
       <div class="lines" id="clearLines"></div>
       <div class="actions">
-        <button class="btn" id="btnNext">下一關</button>
-        <button class="btn ghost" id="btnClearMenu">回首頁</button>
+        <button class="btn" id="btnNext" data-i="next">下一關</button>
+        <button class="btn ghost" id="btnClearMenu" data-i="home">回首頁</button>
       </div>
     </div>
   </div>
@@ -360,13 +404,13 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
   <div class="overlay" id="ovOver">
     <div class="card">
       <div class="over-animal" id="overAnimal"></div>
-      <h2>時間到了</h2>
+      <h2 data-i="timeUp">時間到了</h2>
       <div class="sub" id="overSub"></div>
       <div class="bigscore" id="overScore">0</div>
       <div class="lines" id="overLines"></div>
       <div class="actions">
-        <button class="btn" id="btnRetry">再挑戰這一關</button>
-        <button class="btn ghost" id="btnOverMenu">回首頁</button>
+        <button class="btn" id="btnRetry" data-i="retry">再挑戰這一關</button>
+        <button class="btn ghost" id="btnOverMenu" data-i="home">回首頁</button>
       </div>
     </div>
   </div>
@@ -374,12 +418,12 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
   <!-- pause -->
   <div class="overlay" id="ovPause">
     <div class="card">
-      <h2>休息一下</h2>
-      <div class="sub">時間已暫停</div>
+      <h2 data-i="rest">休息一下</h2>
+      <div class="sub" data-i="paused">時間已暫停</div>
       <div class="actions">
-        <button class="btn" id="btnResume">繼續</button>
-        <button class="btn ghost" id="btnPauseRetry">重玩這一關</button>
-        <button class="btn ghost" id="btnPauseMenu">回首頁</button>
+        <button class="btn" id="btnResume" data-i="resume">繼續</button>
+        <button class="btn ghost" id="btnPauseRetry" data-i="replay">重玩這一關</button>
+        <button class="btn ghost" id="btnPauseMenu" data-i="home">回首頁</button>
       </div>
     </div>
   </div>
@@ -390,7 +434,7 @@ button:focus-visible,.tile:focus-visible{outline:3px solid var(--asagi); outline
       <div class="intro-level" id="introLevel">第 1 關</div>
       <div class="intro-kanji" id="introKanji">桜</div>
       <div class="intro-desc" id="introDesc"></div>
-      <div class="intro-tap">點一下開始</div>
+      <div class="intro-tap" data-i="tapStart">點一下開始</div>
     </div>
   </div>
 </div>
@@ -737,6 +781,13 @@ const ANIMALS = [
 ];
 const SAKURA_BADGE = `<svg class="badge" viewBox="0 0 20 20" aria-hidden="true"><g fill="#F4A7B9"><ellipse cx="10" cy="5" rx="3" ry="4.5"/><ellipse cx="10" cy="5" rx="3" ry="4.5" transform="rotate(72 10 10)"/><ellipse cx="10" cy="5" rx="3" ry="4.5" transform="rotate(144 10 10)"/><ellipse cx="10" cy="5" rx="3" ry="4.5" transform="rotate(216 10 10)"/><ellipse cx="10" cy="5" rx="3" ry="4.5" transform="rotate(288 10 10)"/></g><circle cx="10" cy="10" r="2" fill="#F7D774"/></svg>`;
 
+/* ===== i18n: strings live in the OK_I18N dictionary at the end of the page (ok-i18n) ===== */
+const T=(k,v)=>{ if(!window.OK) return ''; const s=OK.t(k); return v?OK.fmt(s,v):s; };
+function animalName(i){ return T('an'+i)||ANIMALS[i].name; }
+function tileLabel(t){ return animalName(t.type)+(t.sakura?(T('sakuraMark')||'(櫻花)'):''); }
+// Season subtitle for a level: translated per language (the kanji name itself stays as the emblem).
+function seasonTc(cfg, idx){ return cfg.inf ? T('lv',{n:idx+1}) : (T('ss'+idx)||cfg.tc); }
+
 /* ===== Levels: seasonal names, board size, seconds-per-pair, gravity ===== */
 const LEVELS = [
   {name:'桜',   tc:'櫻花', cols:6,  rows:4, types:5,  spp:6.0, shift:'none',    open:[3,6], look:false, accent:'#F4A7B9'},
@@ -759,17 +810,13 @@ const LEVELS_BIG = [
   {name:'初雪', tc:'初雪', cols:16, rows:9, types:14, spp:2.8, shift:'inward',  open:[2,3], look:true, accent:'#7FB9C8'},
   {name:'夜桜', tc:'夜櫻', cols:18, rows:9, types:14, spp:2.6, shift:'outward', open:[2,3], look:true, accent:'#C98BB9'},
 ];
-const SHIFT_TEXT = {none:'方塊不會移動', down:'配對後方塊會往下落', up:'配對後方塊會往上浮', left:'配對後方塊會往左靠', right:'配對後方塊會往右靠', inward:'配對後方塊會向中間聚攏', outward:'配對後方塊會向兩側散開'};
 const SHIFT_CYCLE = ['down','left','up','right','inward','outward'];
 function getLevelConfig(idx){
   const table = state.big ? LEVELS_BIG : LEVELS;
   if(idx < table.length) return table[idx];
   const base = table[table.length-1], n = idx - (table.length-1);
-  return Object.assign({}, base, {name:'無限', tc:`第 ${idx+1} 關`, open:[2,3], look:true, spp:Math.max(1.6, base.spp*Math.pow(0.93, n)), shift:SHIFT_CYCLE[idx % SHIFT_CYCLE.length], accent:['#F4A7B9','#8DB47C','#7FB9C8','#F3C24A','#A79BCF'][idx%5]});
+  return Object.assign({}, base, {name:'無限', tc:`第 ${idx+1} 關`, inf:true, open:[2,3], look:true, spp:Math.max(1.6, base.spp*Math.pow(0.93, n)), shift:SHIFT_CYCLE[idx % SHIFT_CYCLE.length], accent:['#F4A7B9','#8DB47C','#7FB9C8','#F3C24A','#A79BCF'][idx%5]});
 }
-const ITEM_META = {
-  hint:{label:'提示'}, shuffle:{label:'洗牌'}, freeze:{label:'冰結'}, magic:{label:'魔法'}
-};
 
 /* ===== Sound (synthesized, no assets) ===== */
 const Sound = {
@@ -850,7 +897,7 @@ function positionTile(t){ const p=tileXY(t); t.el.style.transform=`translate(${p
 function createTileEl(t){
   const el=document.createElement('div');
   el.className='tile'+(t.sakura?' sakura':''); el.dataset.id=t.id; el.setAttribute('role','button'); el.tabIndex=0;
-  el.setAttribute('aria-label', ANIMALS[t.type].name+(t.sakura?'(櫻花)':''));
+  el.setAttribute('aria-label', tileLabel(t));
   el.style.width=el.style.height=state.cell+'px';
   el.innerHTML=`<div class="tile-inner">${ANIMALS[t.type].svg}${t.sakura?SAKURA_BADGE:''}</div>`;
   t.el=el; positionTile(t);
@@ -858,7 +905,7 @@ function createTileEl(t){
 }
 function refreshTileFace(t){
   t.el.querySelector('.tile-inner').innerHTML=ANIMALS[t.type].svg+(t.sakura?SAKURA_BADGE:'');
-  t.el.setAttribute('aria-label', ANIMALS[t.type].name+(t.sakura?'(櫻花)':''));
+  t.el.setAttribute('aria-label', tileLabel(t));
 }
 function renderBoard(){
   board.querySelectorAll('.tile').forEach(e=>e.remove()); paths.innerHTML=''; fx.innerHTML=''; board.classList.remove('dim'); board.style.display='block';
@@ -987,10 +1034,10 @@ function doMatch(a, b, path, viaItem){
     const el=t.el; setTimeout(()=>el.remove(), 430);
   });
   burst(pa.x,pa.y,accent,7); burst(pb.x,pb.y,accent,7);
-  if(sak){ burst(mid.x,mid.y,'#F4A7B9',10,true); popupText(mid.x, mid.y-state.cell*.35, `+${sak*4} 秒`, 'pop-time'); }
-  if(!viaItem && state.combo>=2) popupText(mid.x, mid.y+(sak?state.cell*.35:0), `×${state.combo}<small>連擊</small>`, 'pop-combo');
+  if(sak){ burst(mid.x,mid.y,'#F4A7B9',10,true); popupText(mid.x, mid.y-state.cell*.35, T('popTime',{n:sak*4}), 'pop-time'); }
+  if(!viaItem && state.combo>=2) popupText(mid.x, mid.y+(sak?state.cell*.35:0), `×${state.combo}<small>${T('comboWord')}</small>`, 'pop-combo');
   Sound.match(viaItem?1:state.combo);
-  if(!viaItem && state.combo>0 && state.combo%5===0) grantRandomItem(`連擊 ${state.combo}`);
+  if(!viaItem && state.combo>0 && state.combo%5===0) grantRandomItem(T('comboReason',{n:state.combo}));
   if(state.hintTiles && (state.hintTiles.includes(a)||state.hintTiles.includes(b))) clearHint();
   // gravity
   if(cfg.shift!=='none'){
@@ -1004,7 +1051,7 @@ function doMatch(a, b, path, viaItem){
 function comboWindow(){ return state.levelIdx<4 ? 3000 : 2500; }
 
 /* ===== Items ===== */
-function noItem(k){ toast(`${ITEM_META[k].label}用完了。連擊每達 5 次可以拿到道具`); Sound.wrong(); }
+function noItem(k){ toast(T('noItem',{item:T(k)})); Sound.wrong(); }
 function useHint(){
   if(state.items.hint<=0) return noItem('hint');
   const pair=Logic.findAnyPair(state.grid, state.tiles); if(!pair) return autoRescue();
@@ -1030,7 +1077,7 @@ function autoRescue(){
   if(state.phase!=='play' || Logic.findAnyPair(state.grid, state.tiles)) return;
   deselect(); clearHint();
   const changed=Logic.rescue(state.grid, state.tiles, state.rows, state.cols, state.level.shift, Math.random);
-  if(!changed){ toast('沒有可配對的組合,自動洗牌'); doShuffle(false); return; }
+  if(!changed){ toast(T('noPairShuffle')); doShuffle(false); return; }
   changed.forEach(t=>t.el.classList.add('flip'));
   Sound.shuffle();
   setTimeout(()=>{
@@ -1038,13 +1085,13 @@ function autoRescue(){
     state.hintTiles=changed.slice(); changed.forEach(t=>t.el.classList.add('hint'));
     state.hintTimer=setTimeout(clearHint, 1600);
   }, 170);
-  toast('卡住了,幫你換了兩隻動物');
+  toast(T('stuck'));
 }
 function useFreeze(){
   if(state.items.freeze<=0) return noItem('freeze');
-  if(state.frozen>0){ toast('冰結還在進行中'); return; }
+  if(state.frozen>0){ toast(T('freezeActive')); return; }
   state.items.freeze--; state.frozen=6; timerEl.classList.add('frozen');
-  toast('冰結:時間暫停 6 秒'); Sound.item(); updateItems();
+  toast(T('freezeTitle')); Sound.item(); updateItems();
 }
 function useMagic(){
   if(state.items.magic<=0) return noItem('magic');
@@ -1056,7 +1103,7 @@ function grantRandomItem(reason){
   const keys=['hint','shuffle','freeze','magic'], k=keys[Math.floor(Math.random()*keys.length)];
   state.items[k]++; updateItems();
   const btn=itemBtns.find(b=>b.dataset.item===k); if(btn) retrigger(btn,'gain');
-  toast(`${reason}:獲得「${ITEM_META[k].label}」`, 350); setTimeout(()=>Sound.item(), 350);
+  toast(T('gotItem',{reason, item:T(k)}), 350); setTimeout(()=>Sound.item(), 350);
 }
 itemBtns.forEach(b=>b.addEventListener('click', ()=>{
   if(state.phase!=='play') return;
@@ -1095,18 +1142,21 @@ function startLevel(idx){
   state.timeMax=Math.max(30, Math.round((tiles.length/2)*cfg.spp*state.diff)); state.time=state.timeMax;
   state.frozen=0; timerEl.classList.remove('frozen'); state.combo=0; state.lastMatch=0; state.levelStartScore=state.score; state.tickSec=-1;
   app.style.setProperty('--accent', cfg.accent);
-  levelNo.textContent=`第 ${idx+1} 關`; levelName.textContent=cfg.name;
+  levelNo.textContent=T('lv',{n:idx+1}); levelName.textContent=cfg.name;
   scoreEl.textContent=fmt(state.score);
   renderBoard(); updateHUD(); updateItems();
   showIntro(cfg, idx, rows, cols);
 }
 function showIntro(cfg, idx, rows, cols){
   state.phase='intro';
-  $('#introLevel').textContent=`第 ${idx+1} 關`;
-  $('#introKanji').textContent=cfg.name;
-  $('#introDesc').textContent=`${cfg.tc}｜${cols} × ${rows} 格,${SHIFT_TEXT[cfg.shift]}${cfg.look?'。長得像的動物會被排在一起':''}`;
+  renderIntroText(cfg, idx, rows, cols);
   $('#intro').classList.add('show');
   clearTimeout(state.introTimer); state.introTimer=setTimeout(dismissIntro, 1700);
+}
+function renderIntroText(cfg, idx, rows, cols){
+  $('#introLevel').textContent=T('lv',{n:idx+1});
+  $('#introKanji').textContent=cfg.name;
+  $('#introDesc').textContent=T('introDesc',{tc:seasonTc(cfg, idx), cols, rows, shift:T('sh_'+cfg.shift), look:cfg.look?T('introLook'):''});
 }
 function dismissIntro(){
   if(state.phase!=='intro') return;
@@ -1127,13 +1177,8 @@ function levelClear(){
   updateItems();
   state.best=Math.max(state.best, state.score);
   Sound.clear(); petalShower(); prebuild(lvl+1);
-  $('#clearTitle').textContent=`第 ${lvl+1} 關 完成`;
-  $('#clearName').textContent=`${state.level.name}${state.level.tc!==state.level.name?'｜'+state.level.tc:''}`;
-  $('#clearLines').innerHTML=
-    `<div><span>配對得分</span><b>${fmt(matchPts)}</b></div>`+
-    `<div><span>剩餘 ${Math.round(state.time)} 秒 加成</span><b>+${fmt(timeBonus)}</b></div>`+
-    `<div><span>總分</span><b>${fmt(state.score)}</b></div>`+
-    `<div class="reward"><span>獲得道具</span><b>提示 ×1${extra?' + '+ITEM_META[extra].label+' ×1':''}</b></div>`;
+  state.clearInfo={lvl, matchPts, timeBonus, secs:Math.round(state.time), extra};
+  renderClearText();
   const starEls=document.querySelectorAll('#stars .star');
   starEls.forEach(s=>s.classList.remove('earned'));
   setTimeout(()=>{
@@ -1141,15 +1186,30 @@ function levelClear(){
     starEls.forEach((s,i)=>{ if(i<stars){ s.style.animationDelay=(300+i*180)+'ms'; s.classList.add('earned'); } });
   }, 350);
 }
+function renderClearText(){
+  const {lvl, matchPts, timeBonus, secs, extra}=state.clearInfo, tc=seasonTc(state.level, lvl);
+  $('#clearTitle').textContent=T('clearTitle',{n:lvl+1});
+  $('#clearName').textContent=`${state.level.name}${tc!==state.level.name?(T('sep')||'｜')+tc:''}`;
+  $('#clearLines').innerHTML=
+    `<div><span>${T('matchPts')}</span><b>${fmt(matchPts)}</b></div>`+
+    `<div><span>${T('timeBonus',{s:secs})}</span><b>+${fmt(timeBonus)}</b></div>`+
+    `<div><span>${T('total')}</span><b>${fmt(state.score)}</b></div>`+
+    `<div class="reward"><span>${T('gotItems')}</span><b>${T('hint')} ×1${extra?' + '+T(extra)+' ×1':''}</b></div>`;
+}
+function renderOverText(){
+  const cjk=['zh-Hant','zh-Hans','ja'].indexOf(window.OK?OK.lang():'zh-Hant')>=0;
+  const name=cjk ? state.level.name : (state.level.inf ? T('ssInf') : seasonTc(state.level, state.levelIdx));
+  $('#overSub').textContent=T('overSub',{n:state.levelIdx+1, name, left:state.remaining});
+  $('#overLines').innerHTML=`<div><span>${T('best')}</span><b>${fmt(state.best)}</b></div>`;
+}
 function gameOver(){
   if(state.phase!=='play') return;
   state.phase='over'; deselect(); clearHint(); board.classList.add('dim');
   Sound.over(); state.best=Math.max(state.best, state.score);
   const t=state.tiles.find(x=>x.alive)||state.tiles[0];
   $('#overAnimal').innerHTML=ANIMALS[t.type].svg;
-  $('#overSub').textContent=`闖到第 ${state.levelIdx+1} 關 ${state.level.name},還剩 ${state.remaining} 隻動物`;
+  renderOverText();
   $('#overScore').textContent=fmt(state.score);
-  $('#overLines').innerHTML=`<div><span>最高分</span><b>${fmt(state.best)}</b></div>`;
   setTimeout(()=>showOverlay('ovOver'), 500);
 }
 function retryLevel(){ state.score=state.levelStartScore; startLevel(state.levelIdx); }
@@ -1170,7 +1230,7 @@ let lastT=performance.now();
 function loop(now){
   const dt=Math.min(.1,(now-lastT)/1000); lastT=now;
   if(state.phase==='play'){
-    if(state.frozen>0){ state.frozen-=dt; if(state.frozen<=0){ state.frozen=0; timerEl.classList.remove('frozen'); toast('冰結結束'); } }
+    if(state.frozen>0){ state.frozen-=dt; if(state.frozen<=0){ state.frozen=0; timerEl.classList.remove('frozen'); toast(T('freezeEnd')); } }
     else state.time-=dt;
     if(state.combo>0 && now-state.lastMatch>comboWindow()){ state.combo=0; updateCombo(); }
     if(state.time<=0){ state.time=0; updateTimer(); gameOver(); } else updateTimer();
@@ -1180,10 +1240,11 @@ function loop(now){
 requestAnimationFrame(loop);
 
 /* ===== Start screen ===== */
+const PREVIEW=[0,1,2,4,5,8];
 function showStart(){
   const pv=$('#preview'); pv.innerHTML='';
-  [0,1,2,4,5,8].forEach((i,k)=>{
-    const d=document.createElement('button'); d.className='preview-tile spawn'; d.setAttribute('aria-label',ANIMALS[i].name);
+  PREVIEW.forEach((i,k)=>{
+    const d=document.createElement('button'); d.className='preview-tile spawn'; d.setAttribute('aria-label',animalName(i));
     d.innerHTML=ANIMALS[i].svg; d.style.animationDelay=(k*70)+'ms';
     d.addEventListener('click', ()=>{ Sound.init(); Sound.select(); retrigger(d,'spawn'); });
     pv.appendChild(d);
@@ -1219,8 +1280,102 @@ $('#btnSound').addEventListener('click', e=>{ Sound.init(); Sound.on=!Sound.on; 
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') togglePause(); });
 document.addEventListener('visibilitychange', ()=>{ if(document.hidden && state.phase==='play') togglePause(); });
 document.addEventListener('pointerdown', ()=>Sound.init(), {once:true});
+// Language switch (ok-i18n): re-render every string the game builds in JS.
+document.addEventListener('ok:lang', ()=>{
+  document.querySelectorAll('#preview .preview-tile').forEach((d,k)=>d.setAttribute('aria-label', animalName(PREVIEW[k])));
+  state.tiles.forEach(t=>{ if(t.el) t.el.setAttribute('aria-label', tileLabel(t)); });
+  const idx=state.level?state.levelIdx:0;
+  levelNo.textContent=T('lv',{n:idx+1});
+  if(state.level) renderIntroText(state.level, idx, state.rows, state.cols); else $('#introLevel').textContent=T('lv',{n:1});
+  if(state.clearInfo && state.level) renderClearText(); else $('#clearTitle').textContent=T('clearTitle',{n:idx+1});
+  if(state.phase==='over') renderOverText();
+});
 
 showStart();
+})();
+</script>
+<script>window.OK_I18N = {"_title":["もふもふ連連看｜毛茸茸動物連連看","もふもふ連連看｜毛茸茸动物连连看","もふもふ連連看 | Fluffy Animal Match","もふもふ連連看｜もふもふ動物つなぎゲーム","もふもふ連連看 | 복슬복슬 동물 짝맞추기","もふもふ連連看 | Empareja animales peluditos","もふもふ連連看 | Combine bichinhos fofinhos","もふもふ連連看 | रोएँदार जानवरों की जोड़ी मिलाओ","もふもふ連連看 | Padankan Haiwan Gebu"],"subtitle":["毛茸茸動物連連看","毛茸茸动物连连看","Fluffy Animal Match","もふもふ動物つなぎゲーム","복슬복슬 동물 짝맞추기","Empareja animales peluditos","Combine bichinhos fofinhos","रोएँदार जानवरों की जोड़ी मिलाओ","Padankan Haiwan Gebu"],"pauseAria":["暫停","暂停","Pause","一時停止","일시정지","Pausa","Pausar","रोकें","Jeda"],"timeLeftAria":["剩餘時間","剩余时间","Time left","残り時間","남은 시간","Tiempo restante","Tempo restante","बचा समय","Masa berbaki"],"boardAria":["遊戲盤面","游戏盘面","Game board","ゲーム盤","게임 보드","Tablero","Tabuleiro","खेल बोर्ड","Papan permainan"],"itemsAria":["道具","道具","Items","アイテム","아이템","Objetos","Itens","आइटम","Item"],"soundAria":["音效開關","音效开关","Sound on/off","効果音オン/オフ","효과음 켜기/끄기","Activar/desactivar sonido","Ligar/desligar som","आवाज़ चालू/बंद","Bunyi hidup/mati"],"hint":["提示","提示","Hint","ヒント","힌트","Pista","Dica","संकेत","Petunjuk"],"shuffle":["洗牌","洗牌","Shuffle","シャッフル","섞기","Mezclar","Misturar","फेंटें","Kocok"],"freeze":["冰結","冰结","Freeze","フリーズ","빙결","Congelar","Congelar","फ़्रीज़","Beku"],"magic":["魔法","魔法","Magic","魔法","마법","Magia","Mágica","जादू","Magik"],"hintTitle":["提示:亮出一組可連的動物","提示:亮出一组可连的动物","Hint: highlights a pair you can link","ヒント:つなげられるペアを光らせる","힌트: 이을 수 있는 한 쌍을 보여 줘요","Pista: resalta una pareja que se puede unir","Dica: destaca um par que dá para ligar","संकेत: जुड़ने लायक एक जोड़ी दिखाता है","Petunjuk: tonjolkan sepasang yang boleh disambung"],"shuffleTitle":["洗牌:重新排列所有動物","洗牌:重新排列所有动物","Shuffle: rearranges all the animals","シャッフル:すべての動物を並べ直す","섞기: 모든 동물을 다시 배치해요","Mezclar: reordena todos los animales","Misturar: reorganiza todos os bichinhos","फेंटें: सभी जानवरों को फिर से जमाता है","Kocok: susun semula semua haiwan"],"freezeTitle":["冰結:時間暫停 6 秒","冰结:时间暂停 6 秒","Freeze: time stops for 6 seconds","フリーズ:時間が6秒止まる","빙결: 6초 동안 시간이 멈춰요","Congelar: el tiempo se detiene 6 segundos","Congelar: o tempo para por 6 segundos","फ़्रीज़: 6 सेकंड के लिए समय रुक जाता है","Beku: masa berhenti selama 6 saat"],"magicTitle":["魔法:自動配對一組","魔法:自动配对一组","Magic: matches a pair automatically","魔法:自動で1ペア消す","마법: 한 쌍을 자동으로 맞춰요","Magia: une una pareja automáticamente","Mágica: combina um par automaticamente","जादू: एक जोड़ी अपने-आप मिलाता है","Magik: padankan sepasang secara automatik"],"score":["分數","分数","Score","スコア","점수","Puntos","Pontos","अंक","Skor"],"comboLabel":["連擊 ×","连击 ×","Combo ×","コンボ ×","콤보 ×","Combo ×","Combo ×","कॉम्बो ×","Kombo ×"],"remain":["剩餘","剩余","Left","残り","남음","Quedan","Restam","बाकी","Baki"],"lv":["第 {n} 關","第 {n} 关","Level {n}","ステージ {n}","레벨 {n}","Nivel {n}","Fase {n}","स्तर {n}","Tahap {n}"],"lead!":["找出兩隻一樣的動物,用最多轉兩個彎的線連起來。<br>動作越快,連擊越高,道具也越多。","找出两只一样的动物,用最多转两个弯的线连起来。<br>动作越快,连击越高,道具也越多。","Find two matching animals and link them with a line that turns at most twice.<br>The faster you go, the higher your combo and the more items you get.","同じ動物を2匹見つけて、曲がり角2回までの線でつなごう。<br>速いほどコンボが伸びて、アイテムも増えるよ。","똑같은 동물 두 마리를 찾아 최대 두 번 꺾이는 선으로 이어 주세요.<br>빠를수록 콤보가 오르고 아이템도 많아져요.","Encuentra dos animales iguales y únelos con una línea de dos giros como máximo.<br>Cuanto más rápido vayas, mayor será el combo y más objetos tendrás.","Encontre dois bichinhos iguais e ligue-os com uma linha de no máximo duas curvas.<br>Quanto mais rápido, maior o combo e mais itens você ganha.","दो एक जैसे जानवर ढूँढो और उन्हें ऐसी लाइन से जोड़ो जो ज़्यादा से ज़्यादा दो बार मुड़े।<br>जितना तेज़ खेलोगे, कॉम्बो उतना ऊँचा और आइटम उतने ज़्यादा।","Cari dua haiwan yang sama dan sambungkan dengan garisan yang membelok paling banyak dua kali.<br>Lebih pantas anda, lebih tinggi kombo dan lebih banyak item."],"paceLabel":["節奏","节奏","Pace","テンポ","속도","Ritmo","Ritmo","रफ़्तार","Rentak"],"diffEasy!":["悠閒<small>時間 ×1.5</small>","悠闲<small>时间 ×1.5</small>","Relaxed<small>Time ×1.5</small>","のんびり<small>時間 ×1.5</small>","느긋하게<small>시간 ×1.5</small>","Relajado<small>Tiempo ×1.5</small>","Tranquilo<small>Tempo ×1.5</small>","आराम से<small>समय ×1.5</small>","Santai<small>Masa ×1.5</small>"],"diffStd!":["標準<small>時間 ×1</small>","标准<small>时间 ×1</small>","Normal<small>Time ×1</small>","ふつう<small>時間 ×1</small>","보통<small>시간 ×1</small>","Normal<small>Tiempo ×1</small>","Normal<small>Tempo ×1</small>","सामान्य<small>समय ×1</small>","Biasa<small>Masa ×1</small>"],"diffPro!":["高手<small>時間 ×0.7</small>","高手<small>时间 ×0.7</small>","Expert<small>Time ×0.7</small>","上級<small>時間 ×0.7</small>","고수<small>시간 ×0.7</small>","Experto<small>Tiempo ×0.7</small>","Mestre<small>Tempo ×0.7</small>","माहिर<small>समय ×0.7</small>","Pakar<small>Masa ×0.7</small>"],"boardLabel":["盤面","盘面","Board","盤面","보드","Tablero","Tabuleiro","बोर्ड","Papan"],"sizeSmall!":["輕巧<small>6×4 起,適合手機</small>","轻巧<small>6×4 起,适合手机</small>","Compact<small>From 6×4, for phones</small>","コンパクト<small>6×4から・スマホ向け</small>","아담하게<small>6×4부터, 휴대폰용</small>","Compacto<small>Desde 6×4, para teléfono</small>","Compacto<small>A partir de 6×4, para celular</small>","छोटा<small>6×4 से, फ़ोन के लिए</small>","Padat<small>Dari 6×4, untuk telefon</small>"],"sizeBig!":["寬闊<small>10×6 起,適合電腦</small>","宽阔<small>10×6 起,适合电脑</small>","Spacious<small>From 10×6, for computers</small>","ワイド<small>10×6から・パソコン向け</small>","넓게<small>10×6부터, 컴퓨터용</small>","Amplio<small>Desde 10×6, para PC</small>","Amplo<small>A partir de 10×6, para computador</small>","बड़ा<small>10×6 से, कंप्यूटर के लिए</small>","Luas<small>Dari 10×6, untuk komputer</small>"],"best":["最高分","最高分","Best","ハイスコア","최고 점수","Récord","Recorde","सर्वश्रेष्ठ","Skor terbaik"],"start":["開始遊戲","开始游戏","Start","ゲームスタート","게임 시작","Empezar","Começar","खेल शुरू करें","Mula"],"how":["怎麼玩","怎么玩","How to play","遊び方","게임 방법","Cómo jugar","Como jogar","कैसे खेलें","Cara bermain"],"r1":["點兩隻相同的動物。連線最多轉兩個彎,而且路上不能有其他方塊。","点两只相同的动物。连线最多转两个弯,而且路上不能有其他方块。","Tap two matching animals. The line can turn at most twice, and no other tiles can be in the way.","同じ動物を2匹タップ。線は曲がり角2回までで、途中にほかのブロックがあってはいけません。","같은 동물 두 마리를 누르세요. 선은 최대 두 번까지 꺾이고, 중간에 다른 블록이 있으면 안 돼요.","Toca dos animales iguales. La línea puede girar dos veces como máximo y no puede haber otras fichas en medio.","Toque em dois bichinhos iguais. A linha pode fazer no máximo duas curvas, sem outras peças no caminho.","दो एक जैसे जानवरों पर टैप करो। लाइन ज़्यादा से ज़्यादा दो बार मुड़ सकती है, और रास्ते में कोई दूसरा ब्लॉक नहीं होना चाहिए।","Ketik dua haiwan yang sama. Garisan boleh membelok paling banyak dua kali, dan tiada jubin lain di laluannya."],"r2":["時間條走完就結束。每配對一次會補一點時間,有櫻花標記的方塊再加 4 秒。","时间条走完就结束。每配对一次会补一点时间,有樱花标记的方块再加 4 秒。","When the time bar runs out, the game ends. Each match adds a little time, and tiles with a cherry blossom mark add 4 more seconds.","時間バーがなくなったら終了。ペアを消すたびに少し時間が戻り、桜マークのブロックならさらに4秒プラス。","시간 막대가 다 줄면 끝나요. 짝을 맞출 때마다 시간이 조금 늘고, 벚꽃 표시가 있는 블록은 4초가 더 늘어요.","Cuando la barra de tiempo se acaba, termina la partida. Cada pareja suma un poco de tiempo, y las fichas con una flor de cerezo suman 4 segundos más.","Quando a barra de tempo acaba, o jogo termina. Cada par devolve um pouco de tempo, e as peças com flor de cerejeira dão mais 4 segundos.","टाइम बार खत्म होते ही खेल खत्म। हर जोड़ी पर थोड़ा समय वापस मिलता है, और चेरी ब्लॉसम के निशान वाले ब्लॉक पर 4 सेकंड और।","Apabila bar masa habis, permainan tamat. Setiap padanan menambah sedikit masa, dan jubin bertanda bunga sakura menambah 4 saat lagi."],"r3":["連續快速配對會累積連擊,分數跟著加倍。連擊每達 5 次,送一個隨機道具。","连续快速配对会累积连击,分数跟着加倍。连击每达 5 次,送一个随机道具。","Quick matches in a row build a combo that multiplies your score. Every 5 combos earns a random item.","素早く続けて消すとコンボがたまり、スコアが倍増。コンボ5回ごとにアイテムをランダムで1つもらえるよ。","빠르게 연속으로 맞추면 콤보가 쌓이고 점수도 배로 늘어요. 콤보 5회마다 랜덤 아이템을 하나 받아요.","Si emparejas rápido y seguido, acumulas combo y tu puntuación se multiplica. Cada 5 combos ganas un objeto al azar.","Combinar rápido e em sequência acumula combo e multiplica seus pontos. A cada 5 combos, você ganha um item aleatório.","लगातार तेज़ी से जोड़ी मिलाने पर कॉम्बो बढ़ता है और अंक कई गुना हो जाते हैं। हर 5 कॉम्बो पर एक रैंडम आइटम मिलता है।","Padanan pantas berturut-turut mengumpul kombo dan menggandakan skor. Setiap 5 kombo, anda dapat satu item rawak."],"r4":["道具:提示(亮出一組)、洗牌(重排)、冰結(時間停 6 秒)、魔法(自動配對一組)。","道具:提示(亮出一组)、洗牌(重排)、冰结(时间停 6 秒)、魔法(自动配对一组)。","Items: Hint (highlights a pair), Shuffle (rearranges), Freeze (stops time for 6 s), Magic (matches a pair for you).","アイテム:ヒント(ペアを表示)、シャッフル(並べ直し)、フリーズ(時間を6秒停止)、魔法(自動で1ペア消す)。","아이템: 힌트(한 쌍 표시), 섞기(재배치), 빙결(6초간 시간 정지), 마법(한 쌍 자동 맞춤).","Objetos: Pista (resalta una pareja), Mezclar (reordena), Congelar (detiene el tiempo 6 s), Magia (une una pareja por ti).","Itens: Dica (destaca um par), Misturar (reorganiza), Congelar (para o tempo por 6 s), Mágica (combina um par para você).","आइटम: संकेत (एक जोड़ी दिखाता है), फेंटें (फिर से जमाता है), फ़्रीज़ (6 सेकंड समय रोकता है), जादू (एक जोड़ी अपने-आप मिलाता है)।","Item: Petunjuk (tonjolkan sepasang), Kocok (susun semula), Beku (hentikan masa 6 saat), Magik (padankan sepasang secara automatik)."],"r5":["從第 3 關起,配對後方塊會移動(落下、靠邊、聚攏),連線路徑也會跟著變。","从第 3 关起,配对后方块会移动(落下、靠边、聚拢),连线路径也会跟着变。","From level 3, tiles move after each match (falling, sliding to one side, gathering), so the paths change too.","ステージ3からは、ペアを消すとブロックが動き(落ちる・寄る・集まる)、つなげるルートも変わるよ。","레벨 3부터는 짝을 맞추면 블록이 움직이고(떨어지기, 한쪽으로 붙기, 모이기) 연결 경로도 함께 바뀌어요.","Desde el nivel 3, las fichas se mueven tras cada pareja (caen, se pegan a un lado, se juntan) y las rutas también cambian.","A partir da fase 3, as peças se movem depois de cada par (caem, encostam num lado, se juntam), e os caminhos mudam junto.","स्तर 3 से, जोड़ी मिलाने के बाद ब्लॉक खिसकते हैं (नीचे गिरते हैं, किनारे लगते हैं, पास आते हैं), और जोड़ने के रास्ते भी बदल जाते हैं।","Mulai tahap 3, jubin bergerak selepas setiap padanan (jatuh, ke tepi, berkumpul), jadi laluan sambungan turut berubah."],"r6":["卡住時會自動換掉兩隻動物讓你繼續,不消耗道具。第 4 關起,長得像的動物會被刻意排在一起,看仔細。","卡住时会自动换掉两只动物让你继续,不消耗道具。第 4 关起,长得像的动物会被刻意排在一起,看仔细。","If you get stuck, two animals are swapped automatically so you can keep going, without using items. From level 4, look-alike animals are placed side by side on purpose, so look closely.","行き詰まったら動物を2匹自動で入れ替えるので、アイテムを使わずに続けられます。ステージ4からは、似ている動物がわざと並べられるので、よく見てね。","막히면 동물 두 마리를 자동으로 바꿔 줘서 아이템 없이 계속할 수 있어요. 레벨 4부터는 닮은 동물을 일부러 나란히 놓으니 잘 보세요.","Si te atascas, se cambian dos animales automáticamente para que sigas, sin gastar objetos. Desde el nivel 4, los animales parecidos se colocan juntos a propósito: mira bien.","Se você travar, dois bichinhos são trocados automaticamente para você continuar, sem gastar itens. A partir da fase 4, bichinhos parecidos ficam lado a lado de propósito, então olhe bem.","अटक जाओ तो दो जानवर अपने-आप बदल दिए जाते हैं ताकि तुम खेलते रहो, कोई आइटम खर्च नहीं होता। स्तर 4 से, मिलते-जुलते जानवर जान-बूझकर पास-पास रखे जाते हैं, ध्यान से देखो।","Jika tersekat, dua haiwan ditukar secara automatik supaya anda boleh teruskan, tanpa guna item. Mulai tahap 4, haiwan yang mirip sengaja disusun bersebelahan, jadi lihat betul-betul."],"gotIt":["知道了","知道了","Got it","わかった","알겠어요","Entendido","Entendi","ठीक है","Faham"],"next":["下一關","下一关","Next level","次のステージ","다음 레벨","Siguiente nivel","Próxima fase","अगला स्तर","Tahap seterusnya"],"home":["回首頁","回首页","Home","ホームへ","처음으로","Inicio","Início","होम पर जाएँ","Laman utama"],"timeUp":["時間到了","时间到了","Time's up","タイムアップ","시간 종료","¡Se acabó el tiempo!","O tempo acabou","समय खत्म","Masa tamat"],"retry":["再挑戰這一關","再挑战这一关","Try this level again","このステージに再挑戦","이 레벨 다시 도전","Reintentar este nivel","Tentar esta fase de novo","यह स्तर फिर से खेलें","Cuba tahap ini lagi"],"rest":["休息一下","休息一下","Take a break","ひと休み","잠깐 쉬어요","Un descanso","Uma pausa","थोड़ा आराम","Rehat sekejap"],"paused":["時間已暫停","时间已暂停","The clock is paused","時間は止まっています","시간이 멈췄어요","El tiempo está en pausa","O tempo está pausado","समय रुका हुआ है","Masa dijeda"],"resume":["繼續","继续","Resume","再開","계속하기","Continuar","Continuar","जारी रखें","Sambung"],"replay":["重玩這一關","重玩这一关","Restart this level","このステージをやり直す","이 레벨 다시 하기","Reiniciar este nivel","Reiniciar esta fase","यह स्तर दोबारा शुरू करें","Main semula tahap ini"],"tapStart":["點一下開始","点一下开始","Tap to start","タップでスタート","눌러서 시작","Toca para empezar","Toque para começar","शुरू करने के लिए टैप करें","Ketik untuk mula"],"introDesc":["{tc}｜{cols} × {rows} 格,{shift}{look}","{tc}｜{cols} × {rows} 格,{shift}{look}","{tc} | {cols} × {rows} grid, {shift}{look}","{tc}｜{cols} × {rows} マス、{shift}{look}","{tc} | {cols} × {rows}칸, {shift}{look}","{tc} | cuadrícula de {cols} × {rows}, {shift}{look}","{tc} | grade de {cols} × {rows}, {shift}{look}","{tc} | {cols} × {rows} ग्रिड, {shift}{look}","{tc} | grid {cols} × {rows}, {shift}{look}"],"introLook":["。長得像的動物會被排在一起","。长得像的动物会被排在一起",". Look-alike animals are placed together","。似ている動物が並べて置かれるよ",". 닮은 동물이 나란히 놓여요",". Los animales parecidos se colocan juntos",". Bichinhos parecidos ficam lado a lado","। मिलते-जुलते जानवर पास-पास रखे जाते हैं",". Haiwan yang mirip disusun bersebelahan"],"sh_none":["方塊不會移動","方块不会移动","tiles don't move","ブロックは動かない","블록이 움직이지 않아요","las fichas no se mueven","as peças não se movem","ब्लॉक नहीं खिसकते","jubin tidak bergerak"],"sh_down":["配對後方塊會往下落","配对后方块会往下落","tiles fall down after a match","ペアを消すとブロックが下に落ちる","짝을 맞추면 블록이 아래로 떨어져요","las fichas caen tras cada pareja","as peças caem depois de cada par","जोड़ी के बाद ब्लॉक नीचे गिरते हैं","jubin jatuh ke bawah selepas padanan"],"sh_up":["配對後方塊會往上浮","配对后方块会往上浮","tiles float up after a match","ペアを消すとブロックが上に浮かぶ","짝을 맞추면 블록이 위로 떠올라요","las fichas suben tras cada pareja","as peças sobem depois de cada par","जोड़ी के बाद ब्लॉक ऊपर उठते हैं","jubin naik ke atas selepas padanan"],"sh_left":["配對後方塊會往左靠","配对后方块会往左靠","tiles slide left after a match","ペアを消すとブロックが左に寄る","짝을 맞추면 블록이 왼쪽으로 붙어요","las fichas se desplazan a la izquierda tras cada pareja","as peças deslizam para a esquerda depois de cada par","जोड़ी के बाद ब्लॉक बाईं ओर खिसकते हैं","jubin beralih ke kiri selepas padanan"],"sh_right":["配對後方塊會往右靠","配对后方块会往右靠","tiles slide right after a match","ペアを消すとブロックが右に寄る","짝을 맞추면 블록이 오른쪽으로 붙어요","las fichas se desplazan a la derecha tras cada pareja","as peças deslizam para a direita depois de cada par","जोड़ी के बाद ब्लॉक दाईं ओर खिसकते हैं","jubin beralih ke kanan selepas padanan"],"sh_inward":["配對後方塊會向中間聚攏","配对后方块会向中间聚拢","tiles gather toward the middle after a match","ペアを消すとブロックが真ん中に集まる","짝을 맞추면 블록이 가운데로 모여요","las fichas se juntan hacia el centro tras cada pareja","as peças se juntam no meio depois de cada par","जोड़ी के बाद ब्लॉक बीच की ओर सिमटते हैं","jubin berkumpul ke tengah selepas padanan"],"sh_outward":["配對後方塊會向兩側散開","配对后方块会向两侧散开","tiles spread out to both sides after a match","ペアを消すとブロックが両側に広がる","짝을 맞추면 블록이 양쪽으로 흩어져요","las fichas se separan hacia los lados tras cada pareja","as peças se espalham para os lados depois de cada par","जोड़ी के बाद ब्लॉक दोनों ओर फैलते हैं","jubin berpecah ke kedua-dua sisi selepas padanan"],"ss0":["櫻花","樱花","Cherry blossoms","さくら","벚꽃","Flor de cerezo","Flor de cerejeira","चेरी ब्लॉसम","Bunga sakura"],"ss1":["嫩葉","嫩叶","Fresh leaves","わかば","새잎","Hojas nuevas","Folhas novas","नई पत्तियाँ","Daun muda"],"ss2":["繡球","绣球","Hydrangea","あじさい","수국","Hortensia","Hortênsia","हाइड्रेंजिया","Hidrangea"],"ss3":["向日葵","向日葵","Sunflower","ひまわり","해바라기","Girasol","Girassol","सूरजमुखी","Bunga matahari"],"ss4":["楓紅","枫红","Autumn leaves","もみじ","단풍","Hojas de otoño","Folhas de outono","पतझड़ के पत्ते","Daun musim luruh"],"ss5":["賞月","赏月","Moon viewing","お月見","달맞이","Contemplar la luna","Contemplar a lua","चाँद निहारना","Menikmati bulan"],"ss6":["初雪","初雪","First snow","はつゆき","첫눈","Primera nevada","Primeira neve","पहली बर्फ़","Salji pertama"],"ss7":["夜櫻","夜樱","Night sakura","よざくら","밤벚꽃","Sakura de noche","Sakura à noite","रात की सकुरा","Sakura malam"],"ssInf":["無限","无限","Endless","無限","무한","Infinito","Infinito","अनंत","Tanpa had"],"popTime":["+{n} 秒","+{n} 秒","+{n}s","+{n}秒","+{n}초","+{n} s","+{n} s","+{n} सेकंड","+{n} saat"],"comboWord":["連擊","连击","combo","コンボ","콤보","combo","combo","कॉम्बो","kombo"],"comboReason":["連擊 {n}","连击 {n}","Combo {n}","コンボ{n}","콤보 {n}","Combo {n}","Combo {n}","कॉम्बो {n}","Kombo {n}"],"gotItem":["{reason}:獲得「{item}」","{reason}:获得「{item}」","{reason}: you got “{item}”","{reason}:「{item}」ゲット","{reason}: ‘{item}’ 획득","{reason}: ¡ganaste «{item}»!","{reason}: você ganhou “{item}”","{reason}: “{item}” मिला","{reason}: dapat “{item}”"],"noItem":["{item}用完了。連擊每達 5 次可以拿到道具","{item}用完了。连击每达 5 次可以拿到道具","Out of {item}. Every 5 combos earns an item","{item}がありません。コンボ5回ごとにアイテムがもらえるよ","‘{item}’ 아이템이 없어요. 콤보 5회마다 아이템을 받을 수 있어요","Ya no tienes «{item}». Cada 5 combos ganas un objeto","Acabou “{item}”. A cada 5 combos você ganha um item","{item} खत्म हो गया। हर 5 कॉम्बो पर एक आइटम मिलता है","{item} sudah habis. Setiap 5 kombo, anda dapat satu item"],"noPairShuffle":["沒有可配對的組合,自動洗牌","没有可配对的组合,自动洗牌","No pairs left, shuffling automatically","消せるペアがないので自動でシャッフル","맞출 수 있는 짝이 없어서 자동으로 섞어요","No hay parejas posibles, mezclando automáticamente","Sem pares possíveis, misturando automaticamente","कोई जोड़ी नहीं बची, अपने-आप फेंट रहे हैं","Tiada padanan, kocok secara automatik"],"stuck":["卡住了,幫你換了兩隻動物","卡住了,帮你换了两只动物","Stuck! Swapped two animals for you","行き詰まったので、動物を2匹入れ替えたよ","막혀서 동물 두 마리를 바꿔 줬어요","Te atascaste: cambiamos dos animales por ti","Travou! Trocamos dois bichinhos para você","अटक गए, दो जानवर बदल दिए","Tersekat, dua haiwan sudah ditukar untuk anda"],"freezeActive":["冰結還在進行中","冰结还在进行中","Freeze is still on","フリーズはまだ効いているよ","빙결이 아직 진행 중이에요","La congelación sigue activa","O congelamento ainda está ativo","फ़्रीज़ अभी चालू है","Beku masih aktif"],"freezeEnd":["冰結結束","冰结结束","Freeze over","フリーズ終了","빙결 끝","Fin de la congelación","Fim do congelamento","फ़्रीज़ खत्म","Beku tamat"],"clearTitle":["第 {n} 關 完成","第 {n} 关 完成","Level {n} cleared","ステージ {n} クリア","레벨 {n} 클리어","¡Nivel {n} superado!","Fase {n} concluída","स्तर {n} पूरा","Tahap {n} selesai"],"matchPts":["配對得分","配对得分","Match points","ペア得点","짝맞추기 점수","Puntos por parejas","Pontos dos pares","जोड़ी के अंक","Mata padanan"],"timeBonus":["剩餘 {s} 秒 加成","剩余 {s} 秒 加成","Time bonus ({s}s left)","残り{s}秒ボーナス","남은 {s}초 보너스","Bonus por {s} s restantes","Bônus por {s} s restantes","बचे {s} सेकंड का बोनस","Bonus baki {s} saat"],"total":["總分","总分","Total","合計","총점","Total","Total","कुल अंक","Jumlah skor"],"gotItems":["獲得道具","获得道具","Items earned","獲得アイテム","획득 아이템","Objetos ganados","Itens ganhos","मिले आइटम","Item diperoleh"],"overSub":["闖到第 {n} 關 {name},還剩 {left} 隻動物","闯到第 {n} 关 {name},还剩 {left} 只动物","Reached level {n}, {name}, with {left} animals left","ステージ {n} {name}まで到達、残り{left}匹","레벨 {n} {name}까지 도착, 동물 {left}마리 남음","Llegaste al nivel {n}, {name}; quedan {left} animales","Você chegou à fase {n}, {name}; restam {left} bichinhos","स्तर {n} ({name}) तक पहुँचे, {left} जानवर बाकी","Sampai tahap {n}, {name}; tinggal {left} haiwan"],"sep":["｜","｜"," | ","｜"," | "," | "," | "," | "," | "],"sakuraMark":["(櫻花)","(樱花)"," (cherry blossom)","(桜)"," (벚꽃)"," (flor de cerezo)"," (flor de cerejeira)"," (चेरी ब्लॉसम)"," (bunga sakura)"],"an0":["貓咪","猫咪","Cat","ねこ","고양이","Gato","Gato","बिल्ली","Kucing"],"an1":["柴犬","柴犬","Shiba Inu","柴犬","시바견","Shiba Inu","Shiba Inu","शीबा इनु","Shiba Inu"],"an2":["兔兔","兔兔","Bunny","うさぎ","토끼","Conejito","Coelhinho","खरगोश","Arnab"],"an3":["小熊","小熊","Bear","くま","곰","Osito","Ursinho","भालू","Beruang"],"an4":["熊貓","熊猫","Panda","パンダ","판다","Panda","Panda","पांडा","Panda"],"an5":["狐狸","狐狸","Fox","きつね","여우","Zorro","Raposa","लोमड़ी","Rubah"],"an6":["青蛙","青蛙","Frog","カエル","개구리","Rana","Sapo","मेंढक","Katak"],"an7":["小豬","小猪","Piglet","こぶた","아기 돼지","Cerdito","Porquinho","छोटा सूअर","Anak babi"],"an8":["小雞","小鸡","Chick","ひよこ","병아리","Pollito","Pintinho","चूज़ा","Anak ayam"],"an9":["無尾熊","考拉","Koala","コアラ","코알라","Koala","Coala","कोआला","Koala"],"an10":["倉鼠","仓鼠","Hamster","ハムスター","햄스터","Hámster","Hamster","हैम्स्टर","Hamster"],"an11":["企鵝","企鹅","Penguin","ペンギン","펭귄","Pingüino","Pinguim","पेंगुइन","Penguin"],"an12":["小虎","小虎","Tiger","トラ","호랑이","Tigre","Tigre","बाघ","Harimau"],"an13":["貓頭鷹","猫头鹰","Owl","フクロウ","부엉이","Búho","Coruja","उल्लू","Burung hantu"]};</script>
+<script>// ok-i18n: imokahhhh.com 共用多國語言。順序 = 網址 ?lang= → 使用者上次選的（全站共用 ok-lang）→ 瀏覽器語言 → English
+// 用法：頁面先放一段 inline script 設定 window.OK_I18N = { key: [9 個語言] }（順序同 LANGS），再放這支程式。
+// 標記：data-i="key"（換 textContent；key 以 ! 結尾換 innerHTML）、data-ia="aria-label:key;title:key2"（換屬性）。
+// 特殊 key：_title（document.title）、_desc（meta description）。
+(function () {
+  var D = window.OK_I18N || {};
+  var LANGS = ['zh-Hant', 'zh-Hans', 'en', 'ja', 'ko', 'es', 'pt', 'hi', 'ms'];
+  var NAMES = { 'zh-Hant': '繁體中文', 'zh-Hans': '简体中文', en: 'English', ja: '日本語', ko: '한국어', es: 'Español', pt: 'Português', hi: 'हिन्दी', ms: 'Bahasa Melayu' };
+  var SHORT = { 'zh-Hant': '繁中', 'zh-Hans': '简中', en: 'EN', ja: '日本語', ko: '한국어', es: 'ES', pt: 'PT', hi: 'हिं', ms: 'MS' };
+  var cur = 'zh-Hant';
+  function norm(t) {
+    t = String(t || '').toLowerCase();
+    if (t.indexOf('zh') === 0) return /hant|-tw|-hk|-mo/.test(t) ? 'zh-Hant' : 'zh-Hans';
+    var b = t.split('-')[0];
+    if (b === 'id') return 'ms';
+    return LANGS.indexOf(b) >= 0 ? b : null;
+  }
+  function detect() {
+    var q = /[?&]lang=([\w-]+)/.exec(location.search);
+    if (q) { var n = LANGS.indexOf(q[1]) >= 0 ? q[1] : norm(q[1]); if (n) return n; }
+    try {
+      var saved = localStorage.getItem('ok-lang') || localStorage.getItem('bk-lang');
+      if (LANGS.indexOf(saved) >= 0) return saved;
+    } catch (e) {}
+    var list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language];
+    for (var i = 0; i < list.length; i++) { var l = norm(list[i]); if (l) return l; }
+    return 'en';
+  }
+  function t(key, lang) {
+    var v = D[key]; if (!v) return '';
+    var s = v[LANGS.indexOf(lang || cur)];
+    return s == null || s === '' ? (v[2] || v[0]) : s;   // 缺翻譯時退回英文，再退回繁中
+  }
+  function fmt(s, vars) { return String(s).replace(/\{(\w+)\}/g, function (m, k) { return vars && k in vars ? vars[k] : m; }); }
+  function apply(lang) {
+    cur = lang;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i]').forEach(function (el) {
+      var k = el.getAttribute('data-i'), v = t(k);
+      if (!v) return;
+      if (k.slice(-1) === '!') el.innerHTML = v; else el.textContent = v;
+    });
+    document.querySelectorAll('[data-ia]').forEach(function (el) {
+      el.getAttribute('data-ia').split(';').forEach(function (pair) {
+        var p = pair.split(':'); if (p.length === 2 && D[p[1]]) el.setAttribute(p[0].trim(), t(p[1].trim()));
+      });
+    });
+    if (D._title) document.title = t('_title');
+    var md = document.querySelector('meta[name="description"]'); if (md && D._desc) md.setAttribute('content', t('_desc'));
+    var c = document.getElementById('langCur'); if (c) { c.textContent = SHORT[lang]; }
+    var b = document.getElementById('langBtn'); if (b) b.setAttribute('aria-label', 'Language: ' + NAMES[lang]);
+    document.querySelectorAll('#langMenu [role="menuitemradio"]').forEach(function (x) { x.setAttribute('aria-checked', String(x.getAttribute('lang') === lang)); });
+    document.dispatchEvent(new CustomEvent('ok:lang', { detail: lang }));
+  }
+  window.OK = { t: t, fmt: fmt, lang: function () { return cur; }, apply: apply, LANGS: LANGS };
+
+  // 語言選單：地球圖示 + 簡稱，點開是各語言的原文名稱
+  var btn = document.getElementById('langBtn'), menu = document.getElementById('langMenu'), wrap = document.getElementById('lang');
+  if (btn && menu && wrap) {
+    LANGS.forEach(function (l) {
+      var li = document.createElement('li'); li.setAttribute('role', 'none');
+      var x = document.createElement('button');
+      x.type = 'button'; x.setAttribute('role', 'menuitemradio'); x.setAttribute('lang', l); x.textContent = NAMES[l];
+      x.addEventListener('click', function () {
+        try { localStorage.setItem('ok-lang', l); } catch (e) {}
+        close(); apply(l); btn.focus();
+      });
+      li.appendChild(x); menu.appendChild(li);
+    });
+    var open = function () { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); var c = menu.querySelector('[aria-checked="true"]') || menu.querySelector('button'); c.focus(); };
+    var close = function () { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+    btn.addEventListener('click', function () { if (menu.hidden) open(); else close(); });
+    document.addEventListener('click', function (e) { if (!menu.hidden && !wrap.contains(e.target)) close(); });
+    menu.addEventListener('keydown', function (e) {
+      var items = Array.prototype.slice.call(menu.querySelectorAll('button')), i = items.indexOf(document.activeElement);
+      if (e.key === 'Escape') { close(); btn.focus(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    });
+  }
+  apply(detect());
 })();
 </script>
 </body>
